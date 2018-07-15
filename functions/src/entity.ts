@@ -4,7 +4,7 @@ const Validate = require('./validate');
 module.exports = class Entity {
 
   private validator;
-  private db;
+  private readonly db;
 
   constructor() {
     this.validator = new Validate();
