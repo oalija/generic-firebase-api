@@ -83,18 +83,20 @@ module.exports = class Entity {
     if (this.db && body !== undefined && body.table !== undefined) {
       const ref = this.db.collection(body.table);
 
-      if (body.min !== undefined && this.isNumber(body.min)) {
-        ref.where('start', '>=', body.min);
+      if (body.filters !== undefined && body.filters instanceof Array) {
+        body.filters.forEach((filter) => {
+          if(filter.field !== undefined && filter.operator !== undefined && filter.value !== undefined){
+            ref.where(filter.field, filter.operator, filter.value);
+          }
+        });
       }
 
-      if (body.max !== undefined && this.isNumber(body.max)) {
-        ref.where('start', '<=', body.min);
-      }
-
-      if (body.order !== undefined && (body.order === "ASC" || body.order === "DESC")) {
-        ref.orderBy('start', body.order);
-      } else {
-        ref.orderBy('start', 'desc');
+      if (body.orders !== undefined && body.filters instanceof Array) {
+        body.orders.forEach((order) => {
+          if(order.field !== undefined && order.operator !== undefined && (order.operator === "asc" || order.operator === "desc")){
+            ref.orderBy(order.field, order.operator);
+          }
+        });
       }
 
       if (body.limit !== undefined && this.isNumber(body.limit)) {
