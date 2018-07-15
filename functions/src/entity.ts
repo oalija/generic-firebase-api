@@ -16,7 +16,7 @@ module.exports = class Entity {
       this.db.collection(body.table).add(body.data)
         .then(document => {
           if (document.exists) {
-            callback(false, document.data());
+            callback(false, {"id": document.id, "data" : document.data()});
           } else {
             callback("Not entity created", false);
           }
@@ -34,7 +34,7 @@ module.exports = class Entity {
       this.db.collection(body.table).doc(body.id).update(body.data)
         .then(document => {
           if (document.exists) {
-            callback(false, document.data());
+            callback(false, {"id": document.id, "data" : document.data()});
           } else {
             callback("Not entity edited", false);
           }
@@ -51,10 +51,10 @@ module.exports = class Entity {
     if (this.db && body.table !== undefined && body.id !== undefined) {
       const document = this.db.collection(body.table).doc(body.id).delete()
         .then(() => {
-          callback(false, true);
+          callback(false, {"status": "ok"});
         })
         .catch((err) => {
-          callback(err, false);
+          callback(err, {"status": "ko"});
         });
     } else {
       callback("No valid parameters", false);
@@ -66,7 +66,7 @@ module.exports = class Entity {
       this.db.collection(body.table).doc(body.id).get()
         .then(document => {
           if (document.exists) {
-            callback(false, document.data());
+            callback(false, {"id": document.id, "data" : document.data()});
           } else {
             callback("Not entity found", false);
           }
